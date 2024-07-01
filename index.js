@@ -1,10 +1,14 @@
 const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 const app = express();
 app.use(bodyParser.json());
 
+app.use(cors());
+
+const homeRoutes = require("./src/routes/home");
 const colorWindowRoutes = require("./src/routes/colorwindow");
 
 app.use((req, res, next) => {
@@ -17,10 +21,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/", homeRoutes);
 app.use("/v1/colorwindow", colorWindowRoutes);
 
-app.listen(4000, () => {
-  console.log(`Server listen on port ${4000}`);
+app.listen(4001, () => {
+  console.log(`Server listen on port 4001`);
 });
 
 mongoose
