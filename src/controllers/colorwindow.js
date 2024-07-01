@@ -22,17 +22,19 @@ exports.createColorWindow = (req, res, next) => {
 
   const data = { customer, material, code, color, date, csdate, qty };
 
-  ColorWindow.create(data)
-    .then((result) => {
-      res.json({
-        success: "Data has been created",
-        data: result,
+  if (data) {
+    ColorWindow.create(data)
+      .then((result) => {
+        res.json({
+          success: "Data has been created",
+          data: result,
+        });
+      })
+      .catch((err) => {
+        res.json({
+          error: "Data can't created",
+          data: err,
+        });
       });
-    })
-    .catch((err) => {
-      res.json({
-        success: "Data can't created",
-        data: err,
-      });
-    });
+  }
 };
