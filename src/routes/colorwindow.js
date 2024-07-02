@@ -11,5 +11,6 @@ router.get(
   colorWindowController.getAllColorWindow
 );
 router.post("/", colorWindowController.createColorWindow);
+router.get("/search/:colorwindow", colorWindowController.createColorWindow);
 
 module.exports = router;
