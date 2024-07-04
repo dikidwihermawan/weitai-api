@@ -38,7 +38,3 @@ exports.createColorWindow = (req, res, next) => {
       });
   }
 };
-
-exports.searchColorWindow = (req, res, next) => {
-  console.log(req.params.colorwindow);
-};
