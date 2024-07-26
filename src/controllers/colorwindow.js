@@ -1,3 +1,4 @@
+const { validationResult } = require("express-validator");
 const ColorWindow = require("../models/colorwindow");
 
 exports.getAllColorWindow = (req, res, next) => {
@@ -19,8 +20,16 @@ exports.createColorWindow = (req, res, next) => {
   const date = req.body.date;
   const csdate = req.body.csdate;
   const qty = req.body.qty;
-
   const data = { customer, material, code, color, date, csdate, qty };
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const err = new Error("Invalid Value");
+    err.errorStatus = 400;
+    err.data = errors.array();
+    throw err;
+  }
 
   if (data) {
     ColorWindow.create(data)
