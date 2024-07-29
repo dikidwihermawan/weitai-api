@@ -27,7 +27,9 @@ exports.createColorWindow = (req, res, next) => {
   if (!errors.isEmpty()) {
     const err = new Error("Invalid Value");
     err.errorStatus = 400;
+
     err.data = errors.array();
+
     throw err;
   }
 
