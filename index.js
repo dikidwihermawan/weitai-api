@@ -26,10 +26,8 @@ app.use("/v1/colorwindow", colorWindowRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.errorStatus || 500;
-  const message = error.message;
-
   const data = error.data;
-  res.status(status).json({ message: message, data: data });
+  res.status(status).json({ data: data });
 });
 
 app.listen(4001, () => {
