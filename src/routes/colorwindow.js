@@ -14,13 +14,14 @@ router.post(
     body("color").notEmpty().withMessage("Color tidak boleh kosong"),
     body("date").notEmpty().withMessage("Date tidak boleh kosong"),
     body("qty")
+      .isNumeric()
+      .withMessage("Quantity harus angka")
       .notEmpty()
-      .withMessage("Quantity tidak boleh kosong")
-      .isInt()
-      .isNumeric("Quantity harus angka"),
+      .withMessage("Quantity tidak boleh kosong"),
     body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
   ],
   colorWindowController.createColorWindow
 );
+router.get("/edit", colorWindowController.editColorWindow);
 
 module.exports = router;

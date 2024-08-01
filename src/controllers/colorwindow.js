@@ -47,3 +47,25 @@ exports.createColorWindow = (req, res, next) => {
       });
   }
 };
+
+exports.editColorWindow = (req, res, next) => {
+  res.json({
+    success: true,
+    data: req,
+  });
+  console.log(req);
+  console.log(res);
+};
+
+exports.updateColorWindow = (req, res, next) => {
+  const material = req.body.material;
+  const code = req.body.code;
+  const color = req.body.color;
+  const date = req.body.date;
+  const csdate = req.body.csdate;
+  const qty = req.body.qty;
+  const customer = req.body.customer;
+  const data = { material, code, color, date, csdate, qty, customer };
+
+  const errors = validationResult(req);
+};
