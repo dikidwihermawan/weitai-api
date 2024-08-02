@@ -49,12 +49,14 @@ exports.createColorWindow = (req, res, next) => {
 };
 
 exports.editColorWindow = (req, res, next) => {
-  res.json({
-    success: true,
-    data: req,
-  });
-  console.log(req);
-  console.log(res);
+  ColorWindow.findOne({ _id: req.params.id })
+    .then((result) => {
+      res.json({
+        success: true,
+        data: result,
+      });
+    })
+    .catch((err) => console.log(`err: ${err}`));
 };
 
 exports.updateColorWindow = (req, res, next) => {
@@ -66,6 +68,22 @@ exports.updateColorWindow = (req, res, next) => {
   const qty = req.body.qty;
   const customer = req.body.customer;
   const data = { material, code, color, date, csdate, qty, customer };
+  const query = { _id: req.params.id };
 
   const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const err = new Error("Invalid Value");
+    err.errorStatus = 400;
+    err.data = errors.array();
+    throw err;
+  }
+  ColorWindow.findOneAndUpdate(query, data)
+    .then((result) => {
+      res.json({
+        success: true,
+        data: result,
+      });
+    })
+    .catch((err) => console.log(`err: ${err}`));
 };

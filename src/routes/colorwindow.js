@@ -22,6 +22,7 @@ router.post(
   ],
   colorWindowController.createColorWindow
 );
-router.get("/edit", colorWindowController.editColorWindow);
+router.get("/edit/:id", colorWindowController.editColorWindow);
+router.put("/update/:id", colorWindowController.updateColorWindow);
 
 module.exports = router;
