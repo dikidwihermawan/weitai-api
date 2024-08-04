@@ -78,7 +78,26 @@ exports.updateColorWindow = (req, res, next) => {
     err.data = errors.array();
     throw err;
   }
-  ColorWindow.findOneAndUpdate(query, data)
+
+  if (data) {
+    ColorWindow.findOneAndUpdate(query, data)
+      .then((result) => {
+        res.json({
+          success: "Data has been updated",
+          data: result,
+        });
+      })
+      .catch((err) => {
+        res.json({
+          error: "Data can't edited",
+          data: err,
+        });
+      });
+  }
+};
+
+exports.deleteColorWindow = (req, res, next) => {
+  ColorWindow.findOne({ _id: req.params.id })
     .then((result) => {
       res.json({
         success: true,
