@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const ColorWindow = require("../models/colorwindow");
+const ForwardedColorWindow = require("../models/forwardedcolorwindow");
 
 exports.getAllColorWindow = (req, res, next) => {
   ColorWindow.find()
@@ -114,18 +115,59 @@ exports.deleteColorWindow = (req, res, next) => {
       })
     );
 };
-exports.forwardToColorWindow = (req, res, next) => {
-  ColorWindow.findOne({ _id: req.params.id })
+
+exports.getAllForwardedColorWindow = (req, res, next) => {
+  ForwardedColorWindow.find()
     .then((result) => {
       res.json({
         success: true,
         data: result,
       });
     })
-    .catch((err) =>
-      res.json({
-        error: "Data not found",
-        data: err,
+    .catch((err) => console.log(`err: ${err}`));
+};
+
+exports.forwardToColorWindow = (req, res, next) => {
+  const customer_id = { _id: req.params.id };
+  const recipient_customer = req.body.customer;
+  const recipient_name = req.body.receiver;
+  const recipient_qty = req.body.qty;
+  const recipient_send = req.body.date;
+  const recipient_return = null;
+  const recipient_information = req.body.information;
+  // recipient_information
+  const data = {
+    customer_id,
+    recipient_customer,
+    recipient_name,
+    recipient_qty,
+    recipient_send,
+    recipient_return,
+    recipient_information,
+  };
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const err = new Error("Invalid Value");
+    err.errorStatus = 400;
+    err.data = errors.array();
+    throw err;
+  }
+
+  if (data) {
+    ForwardedColorWindow.create(data)
+      .then((result) => {
+        res.json({
+          success: "Data has been created",
+          data: result,
+        });
       })
-    );
+      .catch((err) => {
+        res.json({
+          error: "Data can't created",
+          data: err,
+        });
+      });
+  }
 };

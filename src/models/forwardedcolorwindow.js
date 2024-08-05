@@ -1,32 +1,31 @@
 const mongoose = require("mongoose");
 
-const ColorWindow = mongoose.Schema(
+const ForwardedColorWindow = mongoose.Schema(
   {
-    customer: {
+    customer_id: {
       type: String,
       required: true,
     },
-    material: {
+    recipient_customer: {
       type: String,
       required: true,
     },
-    qty: {
+    recipient_name: {
       type: String,
       required: true,
     },
-    code: {
+    recipient_qty: {
       type: String,
       required: true,
     },
-    color: {
+    recipient_send: {
       type: String,
       required: true,
     },
-    date: {
+    recipient_return: {
       type: String,
-      required: true,
     },
-    csdate: {
+    recipient_information: {
       type: String,
       required: true,
     },
@@ -36,4 +35,7 @@ const ColorWindow = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("color_windows", ColorWindow);
+module.exports = mongoose.model(
+  "forwarded_color_windows",
+  ForwardedColorWindow
+);
