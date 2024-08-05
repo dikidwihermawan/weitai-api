@@ -56,7 +56,12 @@ exports.editColorWindow = (req, res, next) => {
         data: result,
       });
     })
-    .catch((err) => console.log(`err: ${err}`));
+    .catch((err) =>
+      res.json({
+        error: "Data not found",
+        data: err,
+      })
+    );
 };
 
 exports.updateColorWindow = (req, res, next) => {
@@ -97,6 +102,19 @@ exports.updateColorWindow = (req, res, next) => {
 };
 
 exports.deleteColorWindow = (req, res, next) => {
+  ColorWindow.deleteOne({ _id: req.params.id })
+    .then(() => {
+      res.json({
+        success: "Data has been deleted!",
+      });
+    })
+    .catch(() =>
+      res.json({
+        error: "Data can't deleted",
+      })
+    );
+};
+exports.forwardToColorWindow = (req, res, next) => {
   ColorWindow.findOne({ _id: req.params.id })
     .then((result) => {
       res.json({
@@ -104,5 +122,10 @@ exports.deleteColorWindow = (req, res, next) => {
         data: result,
       });
     })
-    .catch((err) => console.log(`err: ${err}`));
+    .catch((err) =>
+      res.json({
+        error: "Data not found",
+        data: err,
+      })
+    );
 };

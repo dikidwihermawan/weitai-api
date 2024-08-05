@@ -39,6 +39,7 @@ router.put(
   ],
   colorWindowController.updateColorWindow
 );
-router.delete("/delete", colorWindowController.deleteColorWindow);
+router.delete("/delete/:id", colorWindowController.deleteColorWindow);
+router.get("/forward/:id", colorWindowController.forwardToColorWindow);
 
 module.exports = router;
