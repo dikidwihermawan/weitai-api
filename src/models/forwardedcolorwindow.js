@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const ForwardedColorWindow = mongoose.Schema(
   {
-    customer_id: {
-      type: String,
-      required: true,
+    colorwindow: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ColorWindow",
     },
     recipient_customer: {
       type: String,
@@ -35,7 +35,4 @@ const ForwardedColorWindow = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model(
-  "forwarded_color_windows",
-  ForwardedColorWindow
-);
+module.exports = mongoose.model("Forwarded", ForwardedColorWindow);

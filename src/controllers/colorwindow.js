@@ -137,7 +137,6 @@ exports.getForwardedColorWindow = (req, res, next) => {
 };
 
 exports.createForwardedColorWindow = (req, res, next) => {
-  const query = { _id: req.params.id };
   const recipient_customer = req.body.customer;
   const recipient_name = req.body.receiver;
   const recipient_qty = req.body.qty;
@@ -146,15 +145,6 @@ exports.createForwardedColorWindow = (req, res, next) => {
   const recipient_information = req.body.information;
 
   // recipient_information
-  const data = {
-    customer_id: query,
-    recipient_customer,
-    recipient_name,
-    recipient_qty,
-    recipient_send,
-    recipient_return,
-    recipient_information,
-  };
 
   const errors = validationResult(req);
 
@@ -165,20 +155,27 @@ exports.createForwardedColorWindow = (req, res, next) => {
     throw err;
   }
 
-  if (data) {
-    ForwardedColorWindow.create(data)
-      .then((result) => {
-        res.json({
-          success: "Data has been created",
-          data: result,
-        });
-      })
-      .catch((err) => {
-        res.json({
-          error: "Data can't created",
-          data: err,
-        });
-      });
+  try {
+    const dataColorWindow = ColorWindow.findOne({ _id: req.params.id });
+
+    let addData = new ForwardedColorWindow({
+      colorwindow: dataColorWindow._id,
+      recipient_customer,
+      recipient_name,
+      recipient_qty,
+      recipient_send,
+      recipient_return,
+      recipient_information,
+    });
+    // addData.save();
+    // dataColorWindow.forwarded.push(addData);
+    // dataColorWindow.save();
+    res.json({
+      success: "Data has been created!",
+      data: dataColorWindow,
+    });
+  } catch (e) {
+    res.status(404).json({ message: e.message });
   }
 };
 
@@ -186,7 +183,7 @@ exports.getAllForwardedColorWindow = (req, res, next) => {
   ForwardedColorWindow.find()
     .then((result) => {
       res.json({
-        success: true,
+        success: "Data has been suc",
         data: result,
       });
     })

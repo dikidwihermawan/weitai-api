@@ -26,10 +26,11 @@ const ColorWindow = mongoose.Schema(
       type: String,
       required: true,
     },
+    forwarded: [{ type: mongoose.Schema.Types.ObjectId, ref: "Forwarded" }],
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("color_windows", ColorWindow);
+module.exports = mongoose.model("ColorWindow", ColorWindow);
