@@ -7,43 +7,41 @@ const colorWindowController = require("../controllers/colorwindow");
 
 router.get("/", colorWindowController.getAllColorWindow);
 router.post(
-  "/create",
+  "/local/create",
   [
+    body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
     body("material").notEmpty().withMessage("Material tidak boleh kosong"),
-    body("code").notEmpty().withMessage("Code tidak boleh kosong"),
     body("color").notEmpty().withMessage("Color tidak boleh kosong"),
+    body("type").notEmpty().withMessage("Jenis tidak boleh kosong"),
     body("date").notEmpty().withMessage("Date tidak boleh kosong"),
     body("qty")
       .isNumeric()
       .withMessage("Quantity harus angka")
       .notEmpty()
       .withMessage("Quantity tidak boleh kosong"),
-    body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
   ],
   colorWindowController.createColorWindow
 );
-router.get("/edit/:id", colorWindowController.editColorWindow);
+router.get("/local/edit/:id", colorWindowController.editColorWindow);
 router.put(
-  "/update/:id",
+  "/local/update/:id",
   [
+    body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
     body("material").notEmpty().withMessage("Material tidak boleh kosong"),
-    body("code").notEmpty().withMessage("Code tidak boleh kosong"),
     body("color").notEmpty().withMessage("Color tidak boleh kosong"),
-    body("date").notEmpty().withMessage("Tanggal tidak boleh kosong"),
+    body("type").notEmpty().withMessage("Jenis tidak boleh kosong"),
+    body("date").notEmpty().withMessage("Date tidak boleh kosong"),
     body("qty")
       .isNumeric()
       .withMessage("Quantity harus angka")
       .notEmpty()
       .withMessage("Quantity tidak boleh kosong"),
-    body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
   ],
   colorWindowController.updateColorWindow
 );
-router.delete("/delete/:id", colorWindowController.deleteColorWindow);
-router.get("/forward", colorWindowController.getAllForwardedColorWindow);
-router.get("/forward/:id", colorWindowController.forwardToColorWindow);
+router.get("/local/forward/:id", colorWindowController.getForwardedColorWindow);
 router.post(
-  "/forward/:id",
+  "/local/forward/:id",
   [
     body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
     body("receiver").notEmpty().withMessage("Receiver tidak boleh kosong"),
@@ -55,7 +53,10 @@ router.post(
     body("information").notEmpty().withMessage("Informasi tidak boleh kosong"),
     body("date").notEmpty().withMessage("Tanggal tidak boleh kosong"),
   ],
-  colorWindowController.forwardToColorWindow
+  colorWindowController.createForwardedColorWindow
 );
+router.delete("/local/delete/:id", colorWindowController.deleteColorWindow);
+
+router.get("/forwarded", colorWindowController.getAllForwardedColorWindow);
 
 module.exports = router;

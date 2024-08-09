@@ -10,15 +10,11 @@ const ColorWindow = mongoose.Schema(
       type: String,
       required: true,
     },
-    qty: {
-      type: String,
-      required: true,
-    },
-    code: {
-      type: String,
-      required: true,
-    },
     color: {
+      type: String,
+      required: true,
+    },
+    type: {
       type: String,
       required: true,
     },
@@ -26,7 +22,7 @@ const ColorWindow = mongoose.Schema(
       type: String,
       required: true,
     },
-    csdate: {
+    qty: {
       type: String,
       required: true,
     },

@@ -14,14 +14,13 @@ exports.getAllColorWindow = (req, res, next) => {
 };
 
 exports.createColorWindow = (req, res, next) => {
-  const material = req.body.material;
-  const code = req.body.code;
-  const color = req.body.color;
-  const date = req.body.date;
-  const csdate = req.body.csdate;
-  const qty = req.body.qty;
   const customer = req.body.customer;
-  const data = { material, code, color, date, csdate, qty, customer };
+  const material = req.body.material;
+  const color = req.body.color;
+  const type = req.body.type;
+  const date = req.body.date;
+  const qty = req.body.qty;
+  const data = { customer, material, color, type, date, qty };
 
   const errors = validationResult(req);
 
@@ -66,14 +65,13 @@ exports.editColorWindow = (req, res, next) => {
 };
 
 exports.updateColorWindow = (req, res, next) => {
-  const material = req.body.material;
-  const code = req.body.code;
-  const color = req.body.color;
-  const date = req.body.date;
-  const csdate = req.body.csdate;
-  const qty = req.body.qty;
   const customer = req.body.customer;
-  const data = { material, code, color, date, csdate, qty, customer };
+  const material = req.body.material;
+  const color = req.body.color;
+  const type = req.body.type;
+  const date = req.body.date;
+  const qty = req.body.qty;
+  const data = { customer, material, color, type, date, qty };
   const query = { _id: req.params.id };
 
   const errors = validationResult(req);
@@ -116,28 +114,40 @@ exports.deleteColorWindow = (req, res, next) => {
     );
 };
 
-exports.getAllForwardedColorWindow = (req, res, next) => {
-  ForwardedColorWindow.find()
+exports.getForwardedColorWindow = (req, res, next) => {
+  ColorWindow.findOne({ _id: req.params.id })
     .then((result) => {
       res.json({
         success: true,
-        data: result,
+        data: {
+          id: result._id,
+          customer: result.customer,
+          material: result.material,
+          color: result.color,
+          qty: result.qty,
+        },
       });
     })
-    .catch((err) => console.log(`err: ${err}`));
+    .catch((err) =>
+      res.json({
+        error: "Data not found",
+        data: err,
+      })
+    );
 };
 
-exports.forwardToColorWindow = (req, res, next) => {
-  const customer_id = { _id: req.params.id };
+exports.createForwardedColorWindow = (req, res, next) => {
+  const query = { _id: req.params.id };
   const recipient_customer = req.body.customer;
   const recipient_name = req.body.receiver;
   const recipient_qty = req.body.qty;
   const recipient_send = req.body.date;
   const recipient_return = null;
   const recipient_information = req.body.information;
+
   // recipient_information
   const data = {
-    customer_id,
+    customer_id: query,
     recipient_customer,
     recipient_name,
     recipient_qty,
@@ -170,4 +180,15 @@ exports.forwardToColorWindow = (req, res, next) => {
         });
       });
   }
+};
+
+exports.getAllForwardedColorWindow = (req, res, next) => {
+  ForwardedColorWindow.find()
+    .then((result) => {
+      res.json({
+        success: true,
+        data: result,
+      });
+    })
+    .catch((err) => console.log(`err: ${err}`));
 };
