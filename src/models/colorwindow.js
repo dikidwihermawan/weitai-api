@@ -26,7 +26,7 @@ const ColorWindow = mongoose.Schema(
       type: String,
       required: true,
     },
-    forwarded: [{ type: mongoose.Schema.Types.ObjectId, ref: "Forwarded" }],
+    send: [{ type: mongoose.Schema.Types.ObjectId, ref: "Send" }],
   },
   {
     timestamps: true,

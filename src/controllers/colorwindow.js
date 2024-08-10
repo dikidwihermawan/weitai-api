@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 const ColorWindow = require("../models/colorwindow");
-const ForwardedColorWindow = require("../models/forwardedcolorwindow");
+const SendColorWindow = require("../models/sendcolorwindow");
 
 exports.getAllColorWindow = (req, res, next) => {
   ColorWindow.find()
@@ -114,7 +114,7 @@ exports.deleteColorWindow = (req, res, next) => {
     );
 };
 
-exports.getForwardedColorWindow = (req, res, next) => {
+exports.getSendColorWindow = (req, res, next) => {
   ColorWindow.findOne({ _id: req.params.id })
     .then((result) => {
       res.json({
@@ -136,13 +136,14 @@ exports.getForwardedColorWindow = (req, res, next) => {
     );
 };
 
-exports.createForwardedColorWindow = (req, res, next) => {
+exports.createSendColorWindow = async (req, res, next) => {
   const recipient_customer = req.body.customer;
   const recipient_name = req.body.receiver;
   const recipient_qty = req.body.qty;
   const recipient_send = req.body.date;
   const recipient_return = null;
   const recipient_information = req.body.information;
+  const recipient_status = "PINJAM";
 
   // recipient_information
 
@@ -156,9 +157,8 @@ exports.createForwardedColorWindow = (req, res, next) => {
   }
 
   try {
-    const dataColorWindow = ColorWindow.findOne({ _id: req.params.id });
-
-    let addData = new ForwardedColorWindow({
+    let dataColorWindow = await ColorWindow.findOne({ _id: req.params.id });
+    let addData = new SendColorWindow({
       colorwindow: dataColorWindow._id,
       recipient_customer,
       recipient_name,
@@ -166,24 +166,41 @@ exports.createForwardedColorWindow = (req, res, next) => {
       recipient_send,
       recipient_return,
       recipient_information,
+      recipient_status,
     });
-    // addData.save();
-    // dataColorWindow.forwarded.push(addData);
-    // dataColorWindow.save();
-    res.json({
+    dataColorWindow.updateOne({
+      $set: {
+        qty: 5,
+      },
+      $push: {
+        send: {
+          recipient_customer,
+          recipient_name,
+          recipient_qty,
+          recipient_send,
+          recipient_return,
+          recipient_information,
+          recipient_status,
+        },
+      },
+    });
+    addData.save();
+    dataColorWindow.save();
+    res.status(200).json({
       success: "Data has been created!",
-      data: dataColorWindow,
+      data: addData,
     });
   } catch (e) {
     res.status(404).json({ message: e.message });
   }
 };
 
-exports.getAllForwardedColorWindow = (req, res, next) => {
-  ForwardedColorWindow.find()
+exports.getAllSendColorWindow = (req, res, next) => {
+  SendColorWindow.find()
+    .populate("colorwindow")
     .then((result) => {
       res.json({
-        success: "Data has been suc",
+        success: "Data has been success",
         data: result,
       });
     })

@@ -39,9 +39,9 @@ router.put(
   ],
   colorWindowController.updateColorWindow
 );
-router.get("/local/forward/:id", colorWindowController.getForwardedColorWindow);
+router.get("/local/send/:id", colorWindowController.getSendColorWindow);
 router.post(
-  "/local/forward/:id",
+  "/local/send/:id",
   [
     body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
     body("receiver").notEmpty().withMessage("Receiver tidak boleh kosong"),
@@ -53,10 +53,10 @@ router.post(
     body("information").notEmpty().withMessage("Informasi tidak boleh kosong"),
     body("date").notEmpty().withMessage("Tanggal tidak boleh kosong"),
   ],
-  colorWindowController.createForwardedColorWindow
+  colorWindowController.createSendColorWindow
 );
 router.delete("/local/delete/:id", colorWindowController.deleteColorWindow);
 
-router.get("/forwarded", colorWindowController.getAllForwardedColorWindow);
+router.get("/send", colorWindowController.getAllSendColorWindow);
 
 module.exports = router;
