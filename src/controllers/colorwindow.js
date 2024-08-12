@@ -139,10 +139,10 @@ exports.getSendColorWindow = (req, res, next) => {
 exports.createSendColorWindow = async (req, res, next) => {
   const recipient_customer = req.body.customer;
   const recipient_name = req.body.receiver;
-  const recipient_qty = req.body.qty;
-  const recipient_send = req.body.date;
-  const recipient_return = null;
   const recipient_information = req.body.information;
+  const recipient_send = req.body.date;
+  const recipient_qty = req.body.qty;
+  const recipient_return = null;
   const recipient_status = "PINJAM";
 
   // recipient_information
@@ -168,30 +168,34 @@ exports.createSendColorWindow = async (req, res, next) => {
       recipient_information,
       recipient_status,
     });
-    dataColorWindow.updateOne({
-      $set: {
-        qty: 5,
-      },
-      $push: {
-        send: {
-          recipient_customer,
-          recipient_name,
-          recipient_qty,
-          recipient_send,
-          recipient_return,
-          recipient_information,
-          recipient_status,
-        },
-      },
-    });
+
     addData.save();
-    dataColorWindow.save();
+    ColorWindow.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        $inc: { qty: -5 },
+        $push: {
+          send: {
+            recipient_customer,
+            recipient_name,
+            recipient_qty,
+            recipient_send,
+            recipient_return,
+            recipient_information,
+            recipient_status,
+          },
+        },
+      }
+    );
+
     res.status(200).json({
       success: "Data has been created!",
-      data: addData,
+      data: result,
     });
-  } catch (e) {
-    res.status(404).json({ message: e.message });
+  } catch (err) {
+    res.status(400).json({
+      error: "Data not found!",
+    });
   }
 };
 
