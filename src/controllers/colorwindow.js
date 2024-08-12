@@ -170,31 +170,16 @@ exports.createSendColorWindow = async (req, res, next) => {
     });
 
     addData.save();
-    ColorWindow.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        $inc: { qty: -5 },
-        $push: {
-          send: {
-            recipient_customer,
-            recipient_name,
-            recipient_qty,
-            recipient_send,
-            recipient_return,
-            recipient_information,
-            recipient_status,
-          },
-        },
-      }
-    );
+    dataColorWindow.send.push(addData);
+    dataColorWindow.save();
 
     res.status(200).json({
-      success: "Data has been created!",
-      data: result,
+      success: "Data has been success",
+      data: addData,
     });
-  } catch (err) {
-    res.status(400).json({
-      error: "Data not found!",
+  } catch (e) {
+    res.status(404).json({
+      error: "Data not found",
     });
   }
 };
