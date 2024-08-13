@@ -23,7 +23,7 @@ const ColorWindow = mongoose.Schema(
       required: true,
     },
     qty: {
-      type: String,
+      type: Number,
       required: true,
     },
     send: [{ type: mongoose.Schema.Types.ObjectId, ref: "Send" }],

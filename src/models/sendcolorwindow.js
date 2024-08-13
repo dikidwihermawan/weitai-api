@@ -15,10 +15,10 @@ const SendColorWindow = mongoose.Schema(
       required: true,
     },
     recipient_qty: {
-      type: String,
+      type: Number,
       required: true,
     },
-    recipient_send: {
+    recipient_date: {
       type: String,
       required: true,
     },

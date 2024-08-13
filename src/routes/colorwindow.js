@@ -43,15 +43,22 @@ router.get("/local/send/:id", colorWindowController.getSendColorWindow);
 router.post(
   "/local/send/:id",
   [
-    body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
-    body("receiver").notEmpty().withMessage("Receiver tidak boleh kosong"),
-    body("qty")
+    body("recipient_customer")
+      .notEmpty()
+      .withMessage("Customer tidak boleh kosong"),
+    body("recipient_name").notEmpty().withMessage("Nama tidak boleh kosong"),
+    body("recipient_qty")
       .isNumeric()
       .withMessage("Quantity harus angka")
       .notEmpty()
       .withMessage("Quantity tidak boleh kosong"),
-    body("information").notEmpty().withMessage("Informasi tidak boleh kosong"),
-    body("date").notEmpty().withMessage("Tanggal tidak boleh kosong"),
+    body("recipient_information")
+      .notEmpty()
+      .withMessage("Informasi tidak boleh kosong"),
+    body("recipient_date").notEmpty().withMessage("Tanggal tidak boleh kosong"),
+    body("recipient_status")
+      .notEmpty()
+      .withMessage("Status tidak boleh kosong"),
   ],
   colorWindowController.createSendColorWindow
 );

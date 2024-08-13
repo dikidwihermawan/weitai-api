@@ -34,13 +34,13 @@ exports.createColorWindow = (req, res, next) => {
   if (data) {
     ColorWindow.create(data)
       .then((result) => {
-        res.json({
+        res.status(200).json({
           success: "Data has been created",
           data: result,
         });
       })
       .catch((err) => {
-        res.json({
+        res.status(404).json({
           error: "Data can't created",
           data: err,
         });
@@ -51,13 +51,13 @@ exports.createColorWindow = (req, res, next) => {
 exports.editColorWindow = (req, res, next) => {
   ColorWindow.findOne({ _id: req.params.id })
     .then((result) => {
-      res.json({
+      res.status(200).json({
         success: true,
         data: result,
       });
     })
     .catch((err) =>
-      res.json({
+      res.status(404).json({
         error: "Data not found",
         data: err,
       })
@@ -86,13 +86,13 @@ exports.updateColorWindow = (req, res, next) => {
   if (data) {
     ColorWindow.findOneAndUpdate(query, data)
       .then((result) => {
-        res.json({
+        res.status(200).json({
           success: "Data has been updated",
           data: result,
         });
       })
       .catch((err) => {
-        res.json({
+        res.status(404).json({
           error: "Data can't edited",
           data: err,
         });
@@ -103,12 +103,12 @@ exports.updateColorWindow = (req, res, next) => {
 exports.deleteColorWindow = (req, res, next) => {
   ColorWindow.deleteOne({ _id: req.params.id })
     .then(() => {
-      res.json({
+      res.status(200).json({
         success: "Data has been deleted!",
       });
     })
     .catch(() =>
-      res.json({
+      res.status(404).json({
         error: "Data can't deleted",
       })
     );
@@ -117,7 +117,7 @@ exports.deleteColorWindow = (req, res, next) => {
 exports.getSendColorWindow = (req, res, next) => {
   ColorWindow.findOne({ _id: req.params.id })
     .then((result) => {
-      res.json({
+      res.status(200).json({
         success: true,
         data: {
           id: result._id,
@@ -129,7 +129,7 @@ exports.getSendColorWindow = (req, res, next) => {
       });
     })
     .catch((err) =>
-      res.json({
+      res.status(404).json({
         error: "Data not found",
         data: err,
       })
@@ -137,50 +137,51 @@ exports.getSendColorWindow = (req, res, next) => {
 };
 
 exports.createSendColorWindow = async (req, res, next) => {
-  const recipient_customer = req.body.customer;
-  const recipient_name = req.body.receiver;
-  const recipient_information = req.body.information;
-  const recipient_send = req.body.date;
-  const recipient_qty = req.body.qty;
-  const recipient_return = null;
-  const recipient_status = "PINJAM";
-
-  // recipient_information
-
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    const err = new Error("Invalid Value");
-    err.errorStatus = 400;
-    err.data = errors.array();
-    throw err;
-  }
-
   try {
+    const recipient_customer = req.body.recipient_customer;
+    const recipient_name = req.body.recipient_name;
+    const recipient_information = req.body.recipient_information;
+    const recipient_date = req.body.recipient_date;
+    const recipient_qty = req.body.recipient_qty;
+    const recipient_return = null;
+    const recipient_status = req.body.recipient_status;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const err = new Error("Invalid Value");
+      err.errorStatus = 400;
+      err.data = errors.array();
+      throw err;
+    }
     let dataColorWindow = await ColorWindow.findOne({ _id: req.params.id });
     let addData = new SendColorWindow({
       colorwindow: dataColorWindow._id,
       recipient_customer,
       recipient_name,
       recipient_qty,
-      recipient_send,
+      recipient_date,
       recipient_return,
       recipient_information,
       recipient_status,
     });
 
-    addData.save();
-    dataColorWindow.send.push(addData);
-    dataColorWindow.save();
-
-    res.status(200).json({
-      success: "Data has been success",
-      data: addData,
-    });
-  } catch (e) {
-    res.status(404).json({
-      error: "Data not found",
-    });
+    if (dataColorWindow.qty >= recipient_qty) {
+      dataColorWindow.qty = dataColorWindow.qty - recipient_qty;
+      addData.save();
+      dataColorWindow.send.push(addData);
+      dataColorWindow.save();
+      res.status(200).json({
+        success: "Data has been success",
+        data: addData,
+      });
+    } else {
+      res.status(404).json({
+        message: "Quantity melebihi kapasitas!",
+      });
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
