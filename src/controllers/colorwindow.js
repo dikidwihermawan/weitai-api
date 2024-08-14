@@ -100,18 +100,23 @@ exports.updateColorWindow = (req, res, next) => {
   }
 };
 
-exports.deleteColorWindow = (req, res, next) => {
-  ColorWindow.deleteOne({ _id: req.params.id })
-    .then(() => {
-      res.status(200).json({
-        success: "Data has been deleted!",
-      });
-    })
-    .catch(() =>
-      res.status(404).json({
-        error: "Data can't deleted",
-      })
-    );
+exports.deleteColorWindow = async (req, res, next) => {
+  try {
+    const result = await ColorWindow.findByIdAndDelete(req.params.id);
+
+    let send = result.send.map((c) => c._id);
+
+    await SendColorWindow.deleteMany({
+      _id: {
+        $in: send,
+      },
+    });
+    res.status(200).json({
+      success: "Data has been deleted!",
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getSendColorWindow = (req, res, next) => {
