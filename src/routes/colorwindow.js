@@ -65,5 +65,10 @@ router.post(
 router.delete("/local/delete/:id", colorWindowController.deleteColorWindow);
 
 router.get("/send", colorWindowController.getAllSendColorWindow);
+router.post(
+  "/send/confirm/:id",
+  [body("returned").notEmpty().withMessage("Tanggal tidak boleh kosong")],
+  colorWindowController.confirmSendColorWindow
+);
 
 module.exports = router;

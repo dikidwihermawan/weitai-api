@@ -201,3 +201,30 @@ exports.getAllSendColorWindow = (req, res, next) => {
     })
     .catch((err) => console.log(`err: ${err}`));
 };
+exports.confirmSendColorWindow = async (req, res, next) => {
+  try {
+    const returned = req.body.returned;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const err = new Error("Invalid Value");
+      err.errorStatus = 400;
+      err.data = errors.array();
+      throw err;
+    }
+
+    let sendData = await SendColorWindow.findOne({ _id: req.params.id });
+    sendData.recipient_return = returned;
+    sendData.recipient_status = "SELESAI";
+
+    sendData.save();
+
+    res.status(200).json({
+      success: "Data has been success",
+      data: sendData,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
