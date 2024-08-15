@@ -88,7 +88,7 @@ exports.updateColorWindow = (req, res, next) => {
       .then((result) => {
         res.status(200).json({
           success: "Data has been updated",
-          data: result,
+          data: data,
         });
       })
       .catch((err) => {
@@ -104,11 +104,11 @@ exports.deleteColorWindow = async (req, res, next) => {
   try {
     const result = await ColorWindow.findByIdAndDelete(req.params.id);
 
-    let send = result.send.map((c) => c._id);
+    let sends = result.sends.map((c) => c._id);
 
     await SendColorWindow.deleteMany({
       _id: {
-        $in: send,
+        $in: sends,
       },
     });
     res.status(200).json({
@@ -174,7 +174,7 @@ exports.createSendColorWindow = async (req, res, next) => {
     if (dataColorWindow.qty >= recipient_qty) {
       dataColorWindow.qty = dataColorWindow.qty - recipient_qty;
       addData.save();
-      dataColorWindow.send.push(addData);
+      dataColorWindow.sends.push(addData);
       dataColorWindow.save();
       res.status(200).json({
         success: "Data has been success",
@@ -215,14 +215,55 @@ exports.confirmSendColorWindow = async (req, res, next) => {
     }
 
     let sendData = await SendColorWindow.findOne({ _id: req.params.id });
-    sendData.recipient_return = returned;
-    sendData.recipient_status = "SELESAI";
+    let dataCW = await ColorWindow.findOne({ _id: sendData.colorwindow });
+    if (sendData.recipient_status != "SELESAI") {
+      sendData.recipient_return = returned;
+      sendData.recipient_status = "SELESAI";
+      dataCW.qty = dataCW.qty + sendData.recipient_qty;
 
-    sendData.save();
+      sendData.save();
+      dataCW.save();
+    } else {
+      sendData.recipient_return = returned;
+    }
 
     res.status(200).json({
       success: "Data has been success",
       data: sendData,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteSendColorWindow = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const err = new Error("Invalid Value");
+      err.errorStatus = 400;
+      err.data = errors.array();
+      throw err;
+    }
+
+    let sendData = await SendColorWindow.findOne({ _id: req.params.id });
+    let dataCW = await ColorWindow.findOne({ _id: sendData.colorwindow });
+
+    if (sendData.recipient_status != "SELESAI") {
+      dataCW.qty = dataCW.qty + sendData.recipient_qty;
+      dataCW.sends.pull(sendData._id);
+      dataCW.save();
+      await SendColorWindow.findByIdAndDelete(req.params.id);
+    } else {
+      dataCW.sends.pull(sendData._id);
+      dataCW.save();
+      await SendColorWindow.findByIdAndDelete(req.params.id);
+    }
+
+    res.status(200).json({
+      success: "Data has been deleted!",
+      data: dataCW,
     });
   } catch (err) {
     next(err);

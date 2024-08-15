@@ -70,5 +70,6 @@ router.post(
   [body("returned").notEmpty().withMessage("Tanggal tidak boleh kosong")],
   colorWindowController.confirmSendColorWindow
 );
+router.delete("/send/delete/:id", colorWindowController.deleteSendColorWindow);
 
 module.exports = router;
