@@ -72,4 +72,23 @@ router.post(
 );
 router.delete("/send/delete/:id", colorWindowController.deleteSendColorWindow);
 
+router.post(
+  "/borrow/create",
+  [
+    body("customer").notEmpty().withMessage("Customer tidak boleh kosong"),
+    body("material").notEmpty().withMessage("Material tidak boleh kosong"),
+    body("color").notEmpty().withMessage("Color tidak boleh kosong"),
+    body("type").notEmpty().withMessage("Jenis tidak boleh kosong"),
+    body("qty")
+      .isNumeric()
+      .withMessage("Quantity harus angka")
+      .notEmpty()
+      .withMessage("Quantity tidak boleh kosong"),
+    body("date").notEmpty().withMessage("Date tidak boleh kosong"),
+    body("name").notEmpty().withMessage("Nama Peminjam tidak boleh kosong"),
+    body("information").notEmpty().withMessage("Informasi tidak boleh kosong"),
+  ],
+  colorWindowController.createBorrowColorWindow
+);
+
 module.exports = router;

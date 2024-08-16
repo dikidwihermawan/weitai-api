@@ -271,3 +271,38 @@ exports.deleteSendColorWindow = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.createBorrowColorWindow = (req, res, next) => {
+  const customer = req.body.customer;
+  const material = req.body.material;
+  const color = req.body.color;
+  const type = req.body.type;
+  const date = req.body.date;
+  const qty = req.body.qty;
+  const data = { customer, material, color, type, date, qty };
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const err = new Error("Invalid Value");
+    err.errorStatus = 400;
+    err.data = errors.array();
+    throw err;
+  }
+
+  if (data) {
+    ColorWindow.create(data)
+      .then((result) => {
+        res.status(200).json({
+          success: "Data has been created",
+          data: result,
+        });
+      })
+      .catch((err) => {
+        res.status(404).json({
+          error: "Data can't created",
+          data: err,
+        });
+      });
+  }
+};
