@@ -4,6 +4,7 @@ const SendColorWindow = require("../models/sendcolorwindow");
 
 exports.getAllColorWindow = (req, res, next) => {
   ColorWindow.find()
+    .sort({ _id: -1 })
     .then((result) => {
       res.json({
         success: true,
@@ -192,6 +193,7 @@ exports.createSendColorWindow = async (req, res, next) => {
 
 exports.getAllSendColorWindow = (req, res, next) => {
   SendColorWindow.find()
+    .sort({ _id: -1 })
     .populate("colorwindow")
     .then((result) => {
       res.json({
